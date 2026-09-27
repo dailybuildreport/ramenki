@@ -72,29 +72,57 @@ button{font-family:inherit; color:inherit}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 
 /* ===== каркас ===== */
-.sidebar{position:fixed; top:0; bottom:0; left:0; width:var(--sb-w); z-index:40; display:flex; flex-direction:column; gap:22px;
-  padding:calc(20px + env(safe-area-inset-top,0px)) 14px 16px; background:var(--surface); box-shadow:inset -1px 0 0 var(--line)}
-.sb-brand{display:flex; align-items:center; gap:11px; padding:0 8px; cursor:pointer; background:none; border:0; text-align:left}
+/* Боковая панель всегда тёмная (в обеих темах): свои токены, от темы страницы не зависят */
+.sidebar, .msheet{
+  --sb-bg:#0D1422; --sb-ink:#A4B1C5; --sb-ink-2:#F2F5FA; --sb-muted:#66758D; --sb-hover:#172133; --sb-line:#1C2638; --sb-card:#141D2D;
+  --sb-active:#1A5FD4; --sb-active-ink:#ffffff; --sb-focus:#7FB6FF;
+}
+.sidebar{position:fixed; top:0; bottom:0; left:0; width:var(--sb-w); z-index:40; display:flex; flex-direction:column; gap:18px;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 12px 14px; background:var(--sb-bg); color:var(--sb-ink-2);
+  box-shadow:inset -1px 0 0 var(--sb-line); overflow-y:auto; overflow-x:hidden; scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-brand{display:flex; align-items:center; gap:11px; padding:0 8px; cursor:pointer; background:none; border:0; text-align:left; color:var(--sb-ink-2); min-height:40px}
 .logo{flex:none; width:32px; height:32px; border-radius:8px; background:var(--accent-surface); display:grid; place-items:center; color:#fff}
-.sb-name{font-size:15px; font-weight:730; letter-spacing:-.025em; line-height:1.1}
-.sb-obj{font-size:10.5px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-top:3px}
-.sb-nav{display:flex; flex-direction:column; gap:3px}
-.nav-i{display:flex; align-items:center; gap:12px; width:100%; padding:10px 12px; border:0; background:transparent; border-radius:14px;
-  font:600 13.5px/1.2 var(--font-ui); color:var(--ink-2); cursor:pointer; text-align:left; min-height:42px}
+.sb-name{font-size:15px; font-weight:730; letter-spacing:-.025em; line-height:1.1; color:var(--sb-ink-2)}
+.sb-obj{font-size:10.5px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--sb-muted); margin-top:3px}
+.sb-nav{display:flex; flex-direction:column; gap:2px}
+.sb-sec{font-size:10.5px; font-weight:650; letter-spacing:.12em; text-transform:uppercase; color:var(--sb-muted); padding:6px 12px 6px; white-space:nowrap}
+.nav-i{display:flex; align-items:center; gap:12px; width:100%; padding:0 12px; border:0; background:transparent; border-radius:12px;
+  font:600 13.5px/1.2 var(--font-ui); color:var(--sb-ink, var(--ink-2)); cursor:pointer; text-align:left; min-height:42px; transition:background-color .15s ease, color .15s ease}
 .nav-i svg{flex:none; width:20px; height:20px}
-.nav-i:hover{background:var(--surface-2); color:var(--ink)}
-.nav-i[aria-current="page"]{background:var(--accent-soft); color:var(--accent); font-weight:680}
-.nav-i .cnt{margin-left:auto; font-size:11px; font-weight:700; color:var(--crit); background:var(--crit-soft); padding:1px 8px; border-radius:99px}
-.sb-foot{margin-top:auto; display:flex; flex-direction:column; gap:10px}
-.sb-card{background:var(--surface-2); border-radius:var(--r-md); padding:12px 14px}
+.nav-i .nl{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.nav-i:hover{background:var(--sb-hover, var(--surface-2)); color:var(--sb-ink-2, var(--ink))}
+.nav-i:focus-visible, .sb-gh:focus-visible, .sb-brand:focus-visible{outline:2px solid var(--sb-focus, var(--accent)); outline-offset:1px}
+.nav-i[aria-current="page"]{background:var(--sb-active, var(--accent-surface)); color:var(--sb-active-ink, #fff); font-weight:680}
+.nav-i[aria-current="page"]:hover{background:var(--sb-active, var(--accent-surface))}
+.nav-i .cnt{margin-left:auto; font-size:11px; font-weight:700; color:#F0605C; background:rgba(240,96,92,.16); padding:1px 8px; border-radius:99px; flex:none}
+.nav-i[aria-current="page"] .cnt{color:#fff; background:rgba(255,255,255,.2)}
+/* группа «Данные и отчёты»: заголовок — не страница, плашки не получает */
+.sb-group{display:flex; flex-direction:column; margin-top:10px}
+.sb-gh{display:flex; align-items:center; gap:8px; width:100%; min-height:36px; padding:0 12px; border:0; background:none; border-radius:10px; cursor:pointer;
+  font:650 10.5px/1 var(--font-ui); letter-spacing:.12em; text-transform:uppercase; color:var(--sb-muted); text-align:left}
+.sb-gh:hover{color:var(--sb-ink-2); background:var(--sb-hover)}
+.sb-gh svg{width:14px; height:14px; margin-left:auto; flex:none; transition:transform .18s ease}
+.sb-group.open .sb-gh svg{transform:rotate(90deg)}
+.sb-gb{display:grid; grid-template-rows:0fr; transition:grid-template-rows .18s ease}
+.sb-group.open .sb-gb{grid-template-rows:1fr}
+.sb-gi{min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:2px}
+.sb-gi > .nav-i:first-child{margin-top:2px}
+.sb-solo{margin-top:10px; padding-top:10px; border-top:1px solid var(--sb-line)}
+.sb-foot{margin-top:auto; display:flex; flex-direction:column; gap:8px}
+.sb-card{background:var(--sb-card); border-radius:var(--r-md); padding:12px 14px; color:var(--sb-ink-2)}
+.sb-card .eyebrow{color:var(--sb-muted)}
+.sidebar .btn-entry{box-shadow:none}
 .main{min-width:0}
 .wrap{max-width:1360px; margin:0 auto; padding-block:24px 64px; padding-inline:32px; display:flex; flex-direction:column; gap:18px}
 .botnav{display:none}
 @media (min-width:768px){ .main{margin-left:var(--sb-w)} }
 @media (min-width:768px) and (max-width:1100px){
   .sidebar{width:var(--rail-w); padding-inline:10px} .main{margin-left:var(--rail-w)}
-  .sb-text,.nav-i .nl,.nav-i .cnt,.sb-card,.btn-entry .nl{display:none}
-  .sb-brand{justify-content:center; padding:0} .nav-i{justify-content:center; padding:12px 0}
+  .sidebar .sb-text,.sidebar .nav-i .nl,.sidebar .nav-i .cnt,.sidebar .sb-card,.sidebar .btn-entry .nl,.sidebar .sb-sec,.sidebar .sb-gh .nl{display:none}
+  .sidebar .sb-brand{justify-content:center; padding:0} .sidebar .nav-i{justify-content:center; padding:0}
+  .sidebar .sb-gh{justify-content:center; padding:0} .sidebar .sb-gh svg{margin-left:0}
+  .sidebar .sb-group{margin-top:8px; border-top:1px solid var(--sb-line); padding-top:6px}
   .btn-entry{padding:0 !important; width:48px; align-self:center}
 }
 @media (max-width:767px){
@@ -232,12 +260,14 @@ button{font-family:inherit; color:inherit}
 @media (max-width:767px){ .mg-lab,.mg-row .nm{width:128px} .mg-row .nm{font-size:11.5px} }
 
 /* вехи (порядковая шкала) */
-.ms-track{position:relative; margin-top:64px}
+.ms-scroll{overflow-x:auto; overflow-y:hidden; padding:62px 2px 4px; margin-top:2px; scrollbar-width:thin}
+.ms-track{position:relative}
 .ms-grid{position:relative; display:grid; gap:0}
 .ms{display:flex; flex-direction:column; align-items:center; text-align:center; gap:5px; padding:0 3px; border:0; background:none; color:var(--ink); font:inherit; cursor:pointer; border-radius:12px; padding-bottom:6px}
 .ms:hover{background:var(--hover)}
 .ms .md{width:24px; height:24px; border-radius:50%; border:3px solid; box-shadow:0 0 0 4px var(--surface)}
-.ms .mn{font-size:12px; font-weight:620; line-height:1.25; min-height:30px; margin-top:3px}
+.ms .mn{font-size:12px; font-weight:620; line-height:1.25; min-height:45px; margin-top:3px; overflow-wrap:break-word; hyphens:auto; max-width:100%}
+.ms .chip{white-space:normal; text-align:center; line-height:1.25; max-width:100%}
 .ms .mdt{font-size:11px; color:var(--ink-3); font-variant-numeric:tabular-nums}
 .ms .msub{font-size:10.5px; color:var(--warn-ink); min-height:14px}
 .msv{display:none; flex-direction:column}
@@ -245,7 +275,7 @@ button{font-family:inherit; color:inherit}
 .msv-i .rail{position:relative; display:flex; justify-content:center}
 .msv-i .rail i{position:absolute; top:0; bottom:0; width:2px}
 .msv-i .rail b{position:relative; margin-top:3px; width:16px; height:16px; border-radius:50%; border:3px solid; box-shadow:0 0 0 3px var(--surface)}
-@media (max-width:767px){ .ms-track{display:none} .msv{display:flex} }
+@media (max-width:767px){ .ms-scroll{display:none} .msv{display:flex} }
 
 /* календарь месяцев */
 .cal{display:flex; flex-direction:column; gap:6px}
@@ -292,7 +322,7 @@ table.t{width:100%; border-collapse:collapse; font-size:13px}
 .t tfoot td{font-weight:650; border-top:1px solid var(--line-strong); border-bottom:0}
 .minib{display:flex; align-items:center; gap:8px; min-width:150px}
 .minib .bar{flex:1}
-.minib b{width:44px; text-align:right; font-weight:650; font-size:12.5px}
+.minib > b{width:44px; text-align:right; font-weight:650; font-size:12.5px}
 
 /* ===== сетки экранов ===== */
 .grid2{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:16px; align-items:start}
@@ -422,6 +452,63 @@ table.t{width:100%; border-collapse:collapse; font-size:13px}
 .cmp .lb{position:absolute; top:10px; background:rgba(10,15,26,.74); color:#fff; font-size:12px; font-weight:650; padding:5px 10px; border-radius:99px}
 .drop{border:1.5px dashed var(--line-strong); border-radius:var(--r-md); padding:18px; text-align:center; color:var(--ink-2); font-size:13px}
 .empty{padding:28px; text-align:center; color:var(--ink-2)}
+.struct-t tr.sec-row td{background:var(--surface-2); border-top:1px solid var(--line-strong)}
+.struct-t tr.sub2 td{font-size:12.5px; color:var(--ink-2)}
+.struct-t tr.excl td{opacity:.55}
+.checks{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 22px}
+.chk{display:flex; gap:10px; align-items:flex-start; font-size:13px} .chk .dot{margin-top:5px}
+@media (max-width:900px){ .checks{grid-template-columns:1fr} }
+/* мобильное меню: та же навигация, что в боковой панели */
+.msheet-bg{position:fixed; inset:0; z-index:82; background:rgba(4,8,15,.55); display:flex; align-items:flex-end}
+.msheet{width:100%; max-height:86vh; overflow:auto; background:var(--sb-bg); color:var(--sb-ink-2); border-radius:22px 22px 0 0;
+  padding:10px 12px calc(18px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:6px; box-shadow:0 -20px 50px -20px rgba(0,0,0,.7)}
+.msheet .grab{width:40px; height:4px; border-radius:2px; background:var(--sb-line); align-self:center; margin:4px 0 8px}
+/* отчёт — сводка проекта */
+.rp{display:flex; flex-direction:column; gap:28px}
+.rp-h1{font-size:clamp(34px,4vw,56px); font-weight:780; letter-spacing:-.035em; line-height:1.02}
+.rp-lede{margin-top:12px; font-size:clamp(15px,1.4vw,18px); color:var(--ink-2)}
+.rp-kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px}
+.rp-kpi{background:var(--surface); border:1px solid var(--line-strong); border-radius:var(--r-lg); padding:24px 26px; min-width:0; display:flex; flex-direction:column; gap:10px}
+.rp-l{font-size:15px; color:var(--ink-2)}
+.rp-v{font-size:clamp(32px,3.2vw,46px); font-weight:760; letter-spacing:-.03em; line-height:1.05; font-variant-numeric:tabular-nums; white-space:nowrap}
+.rp-s{font-size:13.5px; color:var(--ink-2); letter-spacing:.01em}
+.rp-panel{background:var(--surface); border:1px solid var(--line-strong); border-radius:var(--r-xl); padding:28px 28px 28px}
+.rp-ph{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:22px}
+.rp-ph h2{font-size:clamp(20px,2vw,27px); font-weight:720; letter-spacing:-.025em}
+.rp-btn{height:46px; padding:0 18px; white-space:nowrap; flex:none; border-radius:var(--r-md); border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); font:650 15px/1 var(--font-ui); cursor:pointer}
+.rp-btn:hover{background:var(--surface-3)}
+.rp-list{display:flex; flex-direction:column; gap:12px}
+.rp-row{display:flex; align-items:center; justify-content:space-between; gap:16px; width:100%; text-align:left; padding:22px 24px; border-radius:var(--r-md);
+  border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); font:inherit; cursor:pointer; min-height:84px}
+.rp-row:hover{border-color:var(--accent)}
+.rp-rt{display:flex; flex-direction:column; gap:6px; min-width:0}
+.rp-t{font-size:16px; font-weight:680}
+.rp-sub{font-size:14px; color:var(--ink-2); font-variant-numeric:tabular-nums}
+.rp-right{font-size:17px; font-variant-numeric:tabular-nums; text-align:right; flex:none}
+.rp-st{display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700}
+@media (max-width:1100px){ .rp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .rp-kpis{grid-template-columns:1fr} .rp-panel{padding:20px 14px} .rp-row{padding:16px; flex-wrap:wrap} .rp-right{text-align:left} }
+@media print{ .rp-kpi,.rp-panel,.rp-row{border-color:#ccd4e0 !important; background:#fff !important} .rp{color:#101A2B} }
+.rep{display:flex; flex-direction:column; gap:16px}
+.rep-sheet{background:var(--surface); border-radius:var(--r-xl); box-shadow:var(--shadow); padding:28px 32px; display:flex; flex-direction:column; gap:22px}
+.rep-h{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-start; border-bottom:1px solid var(--line); padding-bottom:18px}
+.rep-kpi{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
+.rep-kpi > div{background:var(--surface-2); border-radius:var(--r-md); padding:14px 16px; min-width:0}
+.rep-kpi .v{font-size:26px; font-weight:740; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.2}
+.rep-kpi .s{font-size:12.5px; color:var(--ink-2); margin-top:2px}
+.rep-sec{display:flex; flex-direction:column; gap:10px}
+.rep-sec h2{font-size:16px; display:flex; align-items:center; gap:10px}
+.rep-sec h2 .lnk{margin-left:auto; font-size:12.5px; font-weight:600; color:var(--accent-2); background:none; border:0; cursor:pointer; padding:4px 0}
+.rep-list{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:13.5px; line-height:1.55; max-width:95ch}
+.rep-cols{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px}
+@media (max-width:900px){ .rep-kpi{grid-template-columns:1fr 1fr} .rep-cols{grid-template-columns:1fr} .rep-sheet{padding:20px 16px; border-radius:var(--r-lg)} }
+@media print{
+  .sidebar,.botnav,.topbar,.fab,#qc-layer,.toast,.no-print{display:none !important}
+  .main{margin-left:0 !important} .wrap{padding:0 !important; max-width:none}
+  html,body{background:#fff !important}
+  .rep-sheet{box-shadow:none; padding:0}
+  @page{size:A4 portrait; margin:14mm}
+}
 /* кнопка загрузки для ИИ и панель разбора */
 .fab{position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom,0px)); z-index:55; height:48px; min-width:48px; padding:0 14px; border-radius:99px; border:0; cursor:pointer;
   background:var(--surface); color:var(--ink); box-shadow:0 0 0 1px var(--line-strong), 0 14px 30px -12px rgba(0,0,0,.55); display:inline-flex; align-items:center; gap:8px; font:650 12.5px/1 var(--font-ui)}
@@ -498,7 +585,7 @@ const EXTRA_NODES = [
   { u: -1, name: 'БЦ «Раменки»', parent: null, summary: true },
   { u: -2, name: 'Котлован (СТРОЙМЕХАВТО)', parent: -1, s: '2025-04-24', f: '2025-09-30', as: '2025-04-24', af: '2025-09-30', pc: 100, du: 113 }
 ];
-// Вес верхнего уровня = стоимость договора (внутри ГП — длительность, как в MS Project)
+// Веса готовности — в конфигурации PROGRESS_MODEL (22_model.js). Стоимость договоров — для бюджетного режима.
 const TOP_WEIGHTS = { '-2': 400581406.88, '16917': 5286466766.90 };
 
 const CONTRACTS = [
@@ -557,6 +644,201 @@ const PHOTO_SHOTS = [
   { kind: 'facade', view: 'south', work: 16816, zone: 'Оси 1–6, южный фасад', caption: 'Фасадные работы' },
   { kind: 'yard', view: 'north', work: 16943, zone: 'Площадка, северная граница', caption: 'Трасса наружных сетей' }
 ];
+/* =====================================================================
+   МОДЕЛЬ ФИЗИЧЕСКОЙ ГОТОВНОСТИ — КОНФИГУРАЦИЯ ВЕСОВ (projectProgressModel)
+   Готовность объекта = Σ (абсолютный вес работы × выполнение работы), снизу вверх.
+   absoluteProjectWeight = sectionWeight × workWeightWithinSection (× subworkWeight)
+   Другой тип объекта (МКД, гостиница, производство) = другой такой же объект конфигурации.
+
+   Источник факта работы:
+   • own   — задачи ГПР, которыми работа ВЛАДЕЕТ (каждая задача ГПР принадлежит ровно одной работе:
+             так исключается двойной учёт). Выполнение = факт задач, взвешенный по длительности.
+   • proxy — работы нет отдельной строкой в ГПР: прогресс берётся с указанной задачи (допущение, note).
+             Задачей не владеет, вклад начисляется только за свою собственную работу.
+   • model — работы нет в ГПР: создаётся строка в Ганте (раздел «Вне ГПР»), факт вносится в неё.
+   • mix   — стадии оборудования: [[узел, доля], …] (поставка ≠ монтаж ≠ ПНР).
+   scope: 'fitout' — чистовая отделка арендных площадей; при shellAndCore = true не учитывается,
+   её вес перераспределяется на остальные работы раздела.
+   ===================================================================== */
+const PROGRESS_MODEL = {
+  id: 'bc-highrise-v1',
+  objectType: 'Бизнес-центр, многоэтажный',
+  weightModel: 'expert',          // 'expert' | 'budget' | 'hybrid' — budget/hybrid используют work.cost
+  shellAndCore: true,             // отделка офисов арендаторов не входит в объём ГП
+  // Задачи ГПР без физического объёма: согласования, авансы, выбор поставщика, акты-вехи.
+  // Видны в Ганте, на готовность не влияют.
+  nonPhysical: [16925, 16926, 16927, 17103, 17104, 17105, 17100, 17101, 17109, 17113, 17110, 17112,
+    17118, 17117, 17127, 17125, 17130, 17131, 17135, 17136, 17138, 16937, 16886],
+  sections: [
+    { id: 'S01', name: 'Подготовительные работы', weight: 2, works: [
+      { id: 'S01-01', name: 'Мобилизация, бытовой городок', weight: 30, unit: 'этап', own: [16762] },
+      { id: 'S01-02', name: 'Монтаж башенных кранов', weight: 30, unit: 'шт.', plannedQty: 2, own: [16921] },
+      { id: 'S01-03', name: 'Временные дороги, ограждение площадки', weight: 20, unit: 'этап', proxy: [-2], note: 'нет в ГПР; выполнено до разработки котлована' },
+      { id: 'S01-04', name: 'Временные сети электро- и водоснабжения', weight: 20, unit: 'этап', proxy: [-2], note: 'нет в ГПР; выполнено до разработки котлована' }
+    ]},
+    { id: 'S02', name: 'Работы нулевого цикла', weight: 12, works: [
+      { id: 'S02-01', name: 'Разработка котлована / вывоз грунта', weight: 12, unit: 'м³', own: [-2], note: 'договор СТРОЙМЕХАВТО' },
+      { id: 'S02-02', name: 'Ограждение котлована / СВГ', weight: 15, unit: 'захв.', subworks: [
+        { id: 'S02-02-1', name: 'Стена в грунте и распорная система', weight: 60, proxy: [-2], note: 'в составе договора котлована' },
+        { id: 'S02-02-2', name: 'Демонтаж распорной системы', weight: 20, unit: 'захв.', own: [16949, 16977, 16994] },
+        { id: 'S02-02-3', name: 'Выравнивание СВГ', weight: 20, unit: 'захв.', own: [16950, 16981, 17032, 17071] }
+      ]},
+      { id: 'S02-03', name: 'БНС / свайное основание', weight: 22, unit: 'шт.', proxy: [16777], note: 'нет в ГПР; выполнено до фундаментной плиты (плита завершена)' },
+      { id: 'S02-04', name: 'Испытания свай', weight: 3, unit: 'шт.', proxy: [16777], note: 'нет в ГПР; выполнено до фундаментной плиты' },
+      { id: 'S02-05', name: 'Срубка оголовков', weight: 3, unit: 'шт.', proxy: [16777], note: 'нет в ГПР; выполнено до фундаментной плиты' },
+      { id: 'S02-06', name: 'Ростверки / обвязочные конструкции', weight: 10, unit: 'м³', proxy: [16777], note: 'нет в ГПР; выполнено до фундаментной плиты' },
+      { id: 'S02-07', name: 'Подбетонка', weight: 3, unit: 'м³', own: [16776] },
+      { id: 'S02-08', name: 'Гидроизоляция подземной части', weight: 8, unit: 'м²', own: [16907, 16959, 17005, 17038, 17077], note: 'горизонтальная + вертикальная ГИ; владелец веса — нулевой цикл' },
+      { id: 'S02-09', name: 'Фундаментная плита', weight: 18, unit: 'м³', own: [16777], note: 'учитывается только здесь, в монолите не повторяется' },
+      { id: 'S02-10', name: 'Дренаж / водопонижение', weight: 6, unit: 'этап', proxy: [-2], note: 'нет в ГПР; выполнялось при разработке котлована' }
+    ]},
+    { id: 'S03', name: 'Монолит / несущий каркас', weight: 22, works: [
+      { id: 'S03-01', name: 'Подземная часть — стены, колонны', weight: 18, unit: 'м³', own: [16965, 17011, 17044, 17088] },
+      { id: 'S03-02', name: 'Перекрытия подземной части', weight: 8, unit: 'м³', own: [16971, 16988, 17027, 17094] },
+      { id: 'S03-03', name: 'Ядро жёсткости', weight: 22, unit: 'м³', proxy: [17140, 17142, 17144, 17146, 17148, 17150, 17152, 17154, 17156, 17158, 17160], note: 'ядро бетонируется в захватке вертикальных конструкций этажа — прогресс по тем же задачам ГПР' },
+      { id: 'S03-04', name: 'Вертикальные конструкции надземной части', weight: 20, unit: 'м³', own: [17140, 17142, 17144, 17146, 17148, 17150, 17152, 17154, 17156, 17158, 17160] },
+      { id: 'S03-05', name: 'Плиты перекрытий', weight: 25, unit: 'м³', own: [17141, 17143, 17145, 17147, 17149, 17151, 17153, 17155, 17157, 17159, 17161] },
+      { id: 'S03-06', name: 'Лестницы', weight: 4, unit: 'марш', proxy: [17141, 17143, 17145, 17147, 17149, 17151, 17153, 17155, 17157, 17159, 17161], note: 'нет в ГПР; монолитные марши идут с плитами этажа' },
+      { id: 'S03-07', name: 'Парапеты, технические конструкции, МК тех. этажа', weight: 3, unit: 'этап', subworks: [
+        { id: 'S03-07-1', name: 'Монолитные парапеты и тех. конструкции', weight: 50, proxy: [16793], note: 'нет в ГПР; бетонируются с 11 (тех.) этажом' },
+        { id: 'S03-07-2', name: 'Металлоконструкции: изготовление и поставка', weight: 20, unit: 'т', own: [16936] },
+        { id: 'S03-07-3', name: 'Металлоконструкции: монтаж', weight: 30, unit: 'т', own: [16938] }
+      ]}
+    ]},
+    { id: 'S04', name: 'Фасад и тепловой контур', weight: 12, works: [
+      { id: 'S04-01', name: 'НФС / фасадные панели (модули)', weight: 38, unit: 'м²', subworks: [
+        { id: 'S04-01-1', name: 'Производство и поставка модулей', weight: 30, own: [16818] },
+        { id: 'S04-01-2', name: 'Монтаж фасадных модулей', weight: 70, unit: 'м²', own: [16820] }
+      ]},
+      { id: 'S04-02', name: 'Витражный фасад', weight: 27, unit: 'м²', proxy: [16820], note: 'отдельной строки в ГПР нет — в потоке «Устройство фасадов»' },
+      { id: 'S04-03', name: 'Окна и наружные двери', weight: 7, unit: 'шт.', mix: [[17162, 0.3], [17163, 0.7]], own: [17162, 17163] },
+      { id: 'S04-04', name: 'Утепление / мембраны', weight: 8, unit: 'м²', proxy: [16820], note: 'в составе фасадной системы' },
+      { id: 'S04-05', name: 'Примыкания и герметизация', weight: 6, unit: 'п.м', proxy: [16820], note: 'в составе фасадной системы' },
+      { id: 'S04-06', name: 'Входные группы', weight: 6, unit: 'шт.', proxy: [17163], note: 'монтаж с наружными дверями и воротами' },
+      { id: 'S04-07', name: 'Архитектурные элементы', weight: 4, unit: 'этап', proxy: [16820], note: 'нет в ГПР' },
+      { id: 'S04-08', name: 'Фасадные металлоконструкции (кронштейны)', weight: 4, unit: 'шт.', own: [16819] }
+    ]},
+    { id: 'S05', name: 'Кровля', weight: 2, works: [
+      { id: 'S05-01', name: 'Уклонообразующий слой, пароизоляция', weight: 20, unit: 'м²', own: [16822] },
+      { id: 'S05-02', name: 'Утепление кровли', weight: 25, unit: 'м²', proxy: [16822], note: 'в составе «Устройство кровли»' },
+      { id: 'S05-03', name: 'Гидроизоляционный ковёр', weight: 35, unit: 'м²', proxy: [16822], note: 'в составе «Устройство кровли»' },
+      { id: 'S05-04', name: 'Примыкания, парапеты, воронки', weight: 20, unit: 'этап', proxy: [16822], note: 'в составе «Устройство кровли»' }
+    ]},
+    { id: 'S06', name: 'Инженерные системы', weight: 23, works: [
+      { id: 'S06-01', name: 'Вентиляция и дымоудаление', weight: 17, unit: 'м²', subworks: [
+        { id: 'S06-01-1', name: 'Поставка вентоборудования', weight: 15, unit: 'шт.', own: [17116] },
+        { id: 'S06-01-2', name: 'Воздуховоды подземной части', weight: 20, unit: 'м²', own: [16867] },
+        { id: 'S06-01-3', name: 'Магистрали, стояки, поэтажная разводка', weight: 30, unit: 'м²', own: [16868] },
+        { id: 'S06-01-4', name: 'Вентиляционные установки', weight: 15, unit: 'шт.', own: [16869] },
+        { id: 'S06-01-5', name: 'Клапаны, дымоудаление', weight: 8, unit: 'шт.', proxy: [16868], note: 'монтаж с воздуховодами' },
+        { id: 'S06-01-6', name: 'Теплоизоляция', weight: 3, unit: 'м²', proxy: [16868], note: 'с воздуховодами' },
+        { id: 'S06-01-7', name: 'Автоматика, испытания, индивидуальные ПНР', weight: 9, unit: 'этап', proxy: [16869], note: 'после монтажа установок' }
+      ]},
+      { id: 'S06-02', name: 'Холодоснабжение / кондиционирование', weight: 13, unit: 'п.м', subworks: [
+        { id: 'S06-02-1', name: 'Поставка оборудования', weight: 15, unit: 'шт.', own: [17126] },
+        { id: 'S06-02-2', name: 'Хладоцентр', weight: 25, unit: 'шт.', own: [16866] },
+        { id: 'S06-02-3', name: 'Разводка холодоснабжения', weight: 45, unit: 'п.м', own: [16865] },
+        { id: 'S06-02-4', name: 'Испытания, индивидуальные ПНР', weight: 15, unit: 'этап', own: [16863] }
+      ]},
+      { id: 'S06-03', name: 'Отопление / теплоснабжение (вкл. ИТП и АИТ)', weight: 8, unit: 'п.м', subworks: [
+        { id: 'S06-03-1', name: 'Поставка оборудования отопления и ИТП', weight: 10, unit: 'шт.', own: [17132, 17137] },
+        { id: 'S06-03-2', name: 'Трубопроводы отопления', weight: 25, unit: 'п.м', own: [16883, 16878] },
+        { id: 'S06-03-3', name: 'Отопительные приборы', weight: 10, unit: 'шт.', own: [16882, 16875] },
+        { id: 'S06-03-4', name: 'ИТП: монтаж и испытания', weight: 20, unit: 'этап', own: [16885, 16884] },
+        { id: 'S06-03-5', name: 'АИТ (крышная/встроенная котельная)', weight: 35, unit: 'этап', own: [17139] }
+      ]},
+      { id: 'S06-04', name: 'Водопровод и канализация', weight: 10, unit: 'п.м', subworks: [
+        { id: 'S06-04-1', name: 'ВК подземной части', weight: 30, own: [16889] },
+        { id: 'S06-04-2', name: 'ВК надземной части', weight: 50, own: [16888] },
+        { id: 'S06-04-3', name: 'Индивидуальные испытания ВК', weight: 20, own: [16887] }
+      ]},
+      { id: 'S06-05', name: 'Электроснабжение', weight: 18, unit: 'п.м', subworks: [
+        { id: 'S06-05-1', name: 'ТП', weight: 25, unit: 'шт.', own: [16903] },
+        { id: 'S06-05-2', name: 'Электрооборудование подземной части', weight: 30, own: [16904] },
+        { id: 'S06-05-3', name: 'Электрооборудование надземной части', weight: 45, own: [16902] }
+      ]},
+      { id: 'S06-06', name: 'Электроосвещение', weight: 5, unit: 'шт.', subworks: [
+        { id: 'S06-06-1', name: 'Фасадное освещение', weight: 30, own: [16905] },
+        { id: 'S06-06-2', name: 'Внутреннее освещение', weight: 70, proxy: [16902], note: 'в составе электромонтажа надземной части' }
+      ]},
+      { id: 'S06-07', name: 'Пожаротушение (АУПТ, ВПВ)', weight: 8, unit: 'п.м', proxy: [16888, 16887], note: 'отдельной строки в ГПР нет — по потоку ВК надземной части и испытаниям' },
+      { id: 'S06-08', name: 'АПС / СОУЭ', weight: 5, unit: 'п.м', subworks: [
+        { id: 'S06-08-1', name: 'Автоматическая пожарная сигнализация', weight: 50, own: [16899] },
+        { id: 'S06-08-2', name: 'СОУЭ', weight: 50, own: [16891] }
+      ]},
+      { id: 'S06-09', name: 'СКС / связь', weight: 4, unit: 'п.м', subworks: [
+        { id: 'S06-09-1', name: 'СКС и ЛВС', weight: 70, own: [16900] },
+        { id: 'S06-09-2', name: 'Телефонизация', weight: 30, own: [16890] }
+      ]},
+      { id: 'S06-10', name: 'СКУД / видеонаблюдение / охрана', weight: 3, unit: 'шт.', subworks: [
+        { id: 'S06-10-1', name: 'СКУД', weight: 40, own: [16893] },
+        { id: 'S06-10-2', name: 'Видеонаблюдение (СОТ)', weight: 40, own: [16897] },
+        { id: 'S06-10-3', name: 'Охранная сигнализация (СОС)', weight: 20, own: [16892] }
+      ]},
+      { id: 'S06-11', name: 'BMS / диспетчеризация / автоматизация', weight: 6, unit: 'этап', subworks: [
+        { id: 'S06-11-1', name: 'АСУЗ (BMS)', weight: 45, own: [16896] },
+        { id: 'S06-11-2', name: 'АСУД, диспетчеризация', weight: 35, own: [16894] },
+        { id: 'S06-11-3', name: 'АСКУЭ', weight: 20, own: [16895] }
+      ]},
+      { id: 'S06-12', name: 'Прочие инженерные системы', weight: 3, unit: 'этап', subworks: [
+        { id: 'S06-12-1', name: 'Экстренная связь МГН', weight: 50, own: [16898] },
+        { id: 'S06-12-2', name: 'Охранно-защитная дератизационная система', weight: 50, own: [16849] }
+      ]}
+    ]},
+    { id: 'S07', name: 'Лифты и вертикальный транспорт', weight: 4, works: [
+      // стадии оборудования: поставка 30 % / монтаж 70 % — закупка не равна физическому завершению
+      { id: 'S07-01', name: 'Направляющие', weight: 15, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]], own: [16824] },
+      { id: 'S07-02', name: 'Оборудование шахты', weight: 15, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-03', name: 'Кабина', weight: 15, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-04', name: 'Двери шахты и кабины', weight: 12, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-05', name: 'Лебёдка / привод', weight: 12, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-06', name: 'Электрика лифтов', weight: 8, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-07', name: 'Система управления', weight: 8, unit: 'шт.', mix: [[16824, 0.3], [16825, 0.7]] },
+      { id: 'S07-08', name: 'Монтаж и регулировка', weight: 5, unit: 'шт.', own: [16825] },
+      { id: 'S07-09', name: 'Индивидуальные ПНР', weight: 5, unit: 'шт.', own: [17168] },
+      { id: 'S07-10', name: 'Комплексные испытания / ввод лифтов', weight: 5, unit: 'шт.', proxy: [17168], note: 'нет отдельной строки — после ПНР лифтов' }
+    ]},
+    { id: 'S08', name: 'Внутренняя отделка', weight: 12, works: [
+      { id: 'S08-01', name: 'МОП и лифтовые холлы', weight: 22, unit: 'м²', own: [16839], note: '«Отделка надземной части» ГПР' },
+      { id: 'S08-02', name: 'Офисные помещения / арендные площади', weight: 20, unit: 'м²', scope: 'fitout', proxy: [16839], note: 'Shell & Core: чистовая отделка арендаторов не в объёме ГП' },
+      { id: 'S08-03', name: 'Санузлы', weight: 8, unit: 'шт.', proxy: [16839], note: 'в составе отделки надземной части' },
+      { id: 'S08-04', name: 'Технические помещения', weight: 7, unit: 'м²', proxy: [16838], note: 'в составе отделки подземной части' },
+      { id: 'S08-05', name: 'Паркинг', weight: 10, unit: 'м²', own: [16838], note: '«Отделка подземной части (включая кладку)» ГПР' },
+      { id: 'S08-06', name: 'Лестничные клетки', weight: 5, unit: 'шт.', proxy: [16839], note: 'в составе отделки надземной части' },
+      { id: 'S08-07', name: 'Потолки', weight: 7, unit: 'м²', proxy: [16839], note: 'в составе отделки надземной части' },
+      { id: 'S08-08', name: 'Напольные покрытия', weight: 7, unit: 'м²', proxy: [16839], note: 'в составе отделки надземной части' },
+      { id: 'S08-09', name: 'Малярные / стеновые покрытия', weight: 6, unit: 'м²', proxy: [16839, 16838], note: 'по обеим частям здания' },
+      { id: 'S08-10', name: 'Двери внутренние', weight: 4, unit: 'шт.', mix: [[17164, 0.15], [17165, 0.35], [17166, 0.15], [17167, 0.35]], own: [17164, 17165, 17166, 17167] },
+      { id: 'S08-11', name: 'Навигация / архитектурные элементы', weight: 2, unit: 'этап', proxy: [16839], note: 'нет в ГПР' },
+      { id: 'S08-12', name: 'Мебель и оборудование общественных зон', weight: 2, unit: 'этап', proxy: [16839], note: 'нет в ГПР' }
+    ]},
+    { id: 'S09', name: 'Наружные сети', weight: 4, works: [
+      { id: 'S09-01', name: 'Газоснабжение (трубопровод, ГРЩ АИТ)', weight: 20, unit: 'п.м', mix: [[16947, 0.7], [16946, 0.3]], own: [16947, 16946] },
+      { id: 'S09-02', name: 'Водоснабжение', weight: 20, unit: 'п.м', own: [16945] },
+      { id: 'S09-03', name: 'Хозяйственно-бытовая канализация', weight: 20, unit: 'п.м', own: [16944] },
+      { id: 'S09-04', name: 'Ливневая канализация', weight: 15, unit: 'п.м', own: [16941] },
+      { id: 'S09-05', name: 'Наружное электроснабжение', weight: 15, unit: 'п.м', own: [16940] },
+      { id: 'S09-06', name: 'Наружные слаботочные сети', weight: 10, unit: 'п.м', own: [16939] }
+    ]},
+    { id: 'S10', name: 'Благоустройство', weight: 2, works: [
+      { id: 'S10-01', name: 'Поставка материалов', weight: 10, unit: 'этап', own: [17169] },
+      { id: 'S10-02', name: 'Черновое благоустройство', weight: 45, unit: 'м²', own: [16851] },
+      { id: 'S10-03', name: 'Мощение, МАФ, озеленение', weight: 45, unit: 'м²', own: [16852] }
+    ]},
+    { id: 'S11', name: 'Комплексные ПНР и интеграция', weight: 3, works: [
+      { id: 'S11-01', name: 'Комплексное опробование инженерных систем', weight: 35, unit: 'этап', model: { s: '2027-03-18', f: '2027-05-14' } },
+      { id: 'S11-02', name: 'Интеграционные испытания BMS и пожарной автоматики', weight: 30, unit: 'этап', model: { s: '2027-03-16', f: '2027-05-14' } },
+      { id: 'S11-03', name: 'Испытания противопожарных систем (сценарии)', weight: 20, unit: 'этап', model: { s: '2027-03-16', f: '2027-05-21' } },
+      { id: 'S11-04', name: 'Балансировка вентиляции и холодоснабжения', weight: 15, unit: 'этап', model: { s: '2027-03-18', f: '2027-05-21' } }
+    ]},
+    { id: 'S12', name: 'Исполнительная документация / ввод', weight: 2, works: [
+      { id: 'S12-01', name: 'Исполнительная документация', weight: 30, unit: 'комплект', proxy: [16917], note: 'ведётся параллельно СМР — по общему выполнению ГПР' },
+      { id: 'S12-02', name: 'Итоговая проверка, получение ЗОС', weight: 35, unit: 'этап', own: [16932] },
+      { id: 'S12-03', name: 'Разрешение на ввод (РВЭ)', weight: 20, unit: 'этап', own: [16855] },
+      { id: 'S12-04', name: 'Передача УК, акт приёмки', weight: 15, unit: 'этап', own: [16856, 16931] }
+    ]}
+  ]
+};
 /* ================= УТИЛИТЫ ================= */
 const DAY = 864e5;
 const dn = iso => iso ? Math.round(Date.UTC(+iso.slice(0,4), +iso.slice(5,7)-1, +iso.slice(8,10)) / DAY) : null;
@@ -620,6 +902,16 @@ function build(){
     nodes.set(e.u, { u: e.u, mid: null, parent: e.parent, name: e.name, s0: dn(e.s), f0: dn(e.f), as0: dn(e.as), af0: dn(e.af),
       pc0: e.pc ?? 0, du: e.du ?? 0, sm: !!e.summary, cr: false, preds: [], succs: [], kids: [], code: e.u === -1 ? 'PRJ' : 'КТЛ-1' });
   }
+  // работы модели, которых нет в ГПР: отдельные строки Ганта в группе «Вне ГПР» (единый ID с моделью)
+  const modelNode = {};
+  let mSeq = 0;
+  PROGRESS_MODEL.sections.forEach(sec => sec.works.forEach(w => [w, ...(w.subworks || [])].forEach(x => {
+    if (!x.model) return;
+    if (!nodes.has(-10)) nodes.set(-10, { u: -10, mid: null, parent: -1, name: 'Работы вне ГПР (модель БЦ)', s0: null, f0: null, as0: null, af0: null, pc0: 0, du: 0, sm: true, cr: false, preds: [], succs: [], kids: [], code: 'МОД' });
+    const u = -100 - (mSeq++), s0 = dn(x.model.s), f0 = dn(x.model.f);
+    nodes.set(u, { u, mid: null, parent: -10, name: x.name, s0, f0, as0: null, af0: null, pc0: 0, du: Math.max(1, Math.round((f0 - s0) * 5 / 7)), sm: false, cr: false, preds: [], succs: [], kids: [], code: x.id });
+    modelNode[x.id] = u;
+  })));
   for (const n of nodes.values()){
     if (n.parent != null && nodes.has(n.parent)) nodes.get(n.parent).kids.push(n.u);
     n.preds = n.preds.filter(p => nodes.has(p.u));
@@ -723,13 +1015,49 @@ function build(){
   };
   const W = u => { const n = nodes.get(u); return n.leafs.reduce((a, l) => a + (nodes.get(l).du || 0.5), 0); };
   for (const u of order){ const n = nodes.get(u); n.W = W(u); }
+  // ---- 3а. модель весов БЦ: разделы → работы → подработы, абсолютные веса ----
+  const PM = PROGRESS_MODEL, units = [], sections = [], ownerOf = new Map(), modelWarn = [];
+  const leafDu = l => (nodes.get(l).du || 0.5);
+  const groupOf = (uids) => { const set = new Set(); uids.forEach(x => { if (nodes.has(x)) leafSet(x).forEach(l => set.add(l)); }); const ls = [...set]; return { leafs: ls, W: ls.reduce((a, l) => a + leafDu(l), 0) }; };
+  const inScope = x => !(x.scope === 'fitout' && PM.shellAndCore);
+  PM.sections.forEach(sec => {
+    const S_ = { id: sec.id, name: sec.name, weight: sec.weight, works: [], rawSum: sec.works.reduce((a, w) => a + w.weight, 0) };
+    const scopeSum = sec.works.filter(inScope).reduce((a, w) => a + w.weight, 0);
+    sec.works.forEach(w => {
+      const W_ = { id: w.id, name: w.name, weight: w.weight, unit: w.unit, plannedQty: w.plannedQty ?? null, note: w.note || '', excluded: !inScope(w), wWithin: inScope(w) && scopeSum ? w.weight / scopeSum * 100 : 0, units: [], subs: !!w.subworks, rawSubSum: w.subworks ? w.subworks.reduce((a, x) => a + x.weight, 0) : 100 };
+      const parts = w.subworks ? w.subworks.map(x => ({ ...x, unit: x.unit || w.unit })) : [w];
+      const subSum = parts.reduce((a, x) => a + x.weight, 0);
+      parts.forEach(x => {
+        const sw = w.subworks ? x.weight / subSum : 1;
+        const abs = W_.excluded ? 0 : sec.weight / 100 * (W_.wWithin / 100) * sw;
+        let groups, kind;
+        if (x.mix){ groups = x.mix.map(([uid, share]) => ({ ...groupOf([uid]), w: share })); kind = 'mix'; }
+        else if (x.model){ groups = [{ ...groupOf([modelNode[x.id]]), w: 1 }]; kind = 'model'; }
+        else if (x.own){ groups = [{ ...groupOf(x.own), w: 1 }]; kind = 'own'; }
+        else if (x.proxy){ groups = [{ ...groupOf(x.proxy), w: 1 }]; kind = 'proxy'; }
+        else { groups = []; kind = 'none'; }
+        const U = { id: x.id, name: x.name, section: sec, work: W_, subWeight: w.subworks ? x.weight : null, unitName: x.unit, plannedQty: x.plannedQty ?? null,
+          abs, absExpert: abs, cost: x.cost ?? null, kind, groups, note: x.note || '', own: x.own ? x.own.slice() : (x.model ? [modelNode[x.id]] : []), refs: x.mix ? x.mix.map(m => m[0]) : x.proxy || x.own || (x.model ? [modelNode[x.id]] : []) };
+        U.own.forEach(o => { if (!nodes.has(o)) return; leafSet(o).forEach(l => { if (!ownerOf.has(l)) ownerOf.set(l, []); ownerOf.get(l).push(U); }); });
+        units.push(U); W_.units.push(U);
+      });
+      S_.works.push(W_);
+    });
+    sections.push(S_);
+  });
+  // бюджетная / гибридная модель весов (при наличии стоимости работ)
+  if (PM.weightModel !== 'expert'){
+    const tot = units.filter(u => u.abs > 0 && u.cost > 0).reduce((a, u) => a + u.cost, 0);
+    if (!tot) modelWarn.push('Режим «' + PM.weightModel + '»: у работ нет стоимости — применены экспертные веса.');
+    else units.forEach(u => { const b = u.abs > 0 && u.cost > 0 ? u.cost / tot : 0; u.abs = PM.weightModel === 'budget' ? b : (u.absExpert + b) / 2; });
+  }
+  const absTotal = units.reduce((a, u) => a + u.abs, 0);
+  const gVal = (g, fn) => g.W ? g.leafs.reduce((a, l) => a + leafDu(l) * fn(nodes.get(l)), 0) / g.W : 0;
+  const unitVal = (U, fn) => U.groups.reduce((a, g) => a + g.w * gVal(g, fn), 0) / (U.groups.reduce((a, g) => a + g.w, 0) || 1);
+  const modelAgg = fn => units.reduce((a, U) => a + U.abs * unitVal(U, fn), 0) / (absTotal || 1);
   const agg = (u, fn) => {
     const n = nodes.get(u);
-    if (u === -1){
-      let a = 0, b = 0;
-      n.kids.forEach(k => { const w = TOP_WEIGHTS[k] || 0; a += w * agg(k, fn); b += w; });
-      return b ? a / b : 0;
-    }
+    if (u === -1) return modelAgg(fn);
     if (!n.sm) return fn(n);
     let a = 0; n.leafs.forEach(l => { const ln = nodes.get(l); a += (ln.du || 0.5) * fn(ln); });
     return n.W ? a / n.W : 0;
@@ -749,6 +1077,44 @@ function build(){
     n.devDays = n.ff - n.f0;
     if (S.baseline && S.baseline.map[u]){ n.bs = S.baseline.map[u][0]; n.bf = S.baseline.map[u][1]; }
   }
+  // ---- 3б. значения модели для экранов и проверка ----
+  units.forEach(U => {
+    U.pc = clamp(unitVal(U, x => x.pc), 0, 100);
+    U.planNow = unitVal(U, x => planLeaf(x, T));
+    U.contrib = U.abs * U.pc;                 // вклад в готовность объекта, п.п. (abs — доля 0..1)
+    U.actualQty = U.plannedQty != null ? U.plannedQty * U.pc / 100 : null;
+    U.ff = Math.max(...U.groups.flatMap(g => g.leafs.map(l => nodes.get(l).ff)), -Infinity);
+    U.f0 = Math.max(...U.groups.flatMap(g => g.leafs.map(l => nodes.get(l).f0)), -Infinity);
+  });
+  const roll = list => { const a = list.reduce((x, U) => x + U.abs, 0); return { abs: a, pc: a ? list.reduce((x, U) => x + U.abs * U.pc, 0) / a : 0, planNow: a ? list.reduce((x, U) => x + U.abs * U.planNow, 0) / a : 0, contrib: list.reduce((x, U) => x + U.contrib, 0) }; };
+  sections.forEach(S_ => { S_.works.forEach(W_ => Object.assign(W_, roll(W_.units))); Object.assign(S_, roll(S_.works.flatMap(w => w.units))); });
+  const checks = [];
+  const near = (a, b) => Math.abs(a - b) < 1e-6;
+  const secSum = PM.sections.reduce((a, s_) => a + s_.weight, 0);
+  checks.push({ ok: near(secSum, 100), t: 'Сумма весов разделов = 100 %', d: fp(secSum, 1) + ' %' });
+  const badSec = sections.filter(s_ => !near(s_.rawSum, 100)).map(s_ => s_.name + ': ' + s_.rawSum);
+  const badSub = sections.flatMap(s_ => s_.works).filter(w => w.subs && !near(w.rawSubSum, 100)).map(w => w.name + ': ' + w.rawSubSum);
+  checks.push({ ok: !badSec.length && !badSub.length, t: 'Внутри каждого раздела и работы сумма весов = 100 %', d: badSec.concat(badSub).join('; ') || sections.length + ' разделов, ' + sections.reduce((a, s_) => a + s_.works.length, 0) + ' работ' + (PM.shellAndCore ? '; Shell & Core: вес отделки арендных площадей перераспределён внутри раздела' : '') });
+  const neg = PM.sections.flatMap(s_ => [s_.weight, ...s_.works.flatMap(w => [w.weight, ...(w.subworks || []).map(x => x.weight)])]).filter(v => v < 0);
+  checks.push({ ok: !neg.length, t: 'Нет отрицательных весов', d: neg.length ? neg.join(', ') : 'все веса ≥ 0' });
+  const outR = units.filter(U => U.pc < 0 || U.pc > 100);
+  checks.push({ ok: !outR.length, t: 'Выполнение каждой работы в пределах 0–100 %', d: outR.map(U => U.name).join(', ') || units.length + ' позиций модели' });
+  checks.push({ ok: root.pc <= 100.0001 && near(absTotal, 1), t: 'Готовность объекта ≤ 100 %, сумма абсолютных весов = 100 %', d: fp(root.pc, 2) + ' % · Σ абс. весов ' + fp(absTotal * 100, 2) + ' %' });
+  const dbl = [...ownerOf.entries()].filter(([, us]) => us.length > 1);
+  checks.push({ ok: !dbl.length, t: 'Нет двойного учёта: каждая задача ГПР принадлежит одной работе', d: dbl.length ? dbl.map(([l, us]) => nodes.get(l).name + ' → ' + us.map(x => x.id).join(', ')).join('; ') : ownerOf.size + ' задач ГПР с владельцем' });
+  const noSrc = units.filter(U => U.abs > 0 && (!U.groups.length || U.groups.some(g => !g.leafs.length)));
+  checks.push({ ok: !noSrc.length, t: 'Нет работ с весом без источника выполнения', d: noSrc.map(U => U.name).join(', ') || 'у каждой работы есть задача ГПР, допущение или строка «вне ГПР»' });
+  const ids = units.map(U => U.id), dupIds = ids.filter((x, i) => ids.indexOf(x) !== i);
+  checks.push({ ok: !dupIds.length, t: 'Нет работ вне разделов и повторяющихся ID', d: dupIds.join(', ') || 'все ID уникальны' });
+  const nonPhys = new Set(PM.nonPhysical);
+  const orphan = leaves.filter(l => l > 0 && !nonPhys.has(l) && !ownerOf.has(l)).map(l => nodes.get(l));
+  checks.push({ ok: !orphan.length, t: 'Все физические задачи Ганта связаны с моделью', d: orphan.length ? 'без владельца: ' + orphan.map(x => x.name + ' (' + x.u + ')').join('; ') : (leaves.filter(l => l > 0).length - nonPhys.size) + ' задач с весом · ' + nonPhys.size + ' согласований и авансов без физического объёма' });
+  const lostRecs = S.records.filter(r => !nodes.has(r.uid));
+  const kept = MPP_ROWS.filter(r => r[8] > 0 && nodes.get(r[0]) && !nodes.get(r[0]).sm && nodes.get(r[0]).pc0 === r[8]).length;
+  checks.push({ ok: !lostRecs.length, t: 'Исторические фактические данные сохранены', d: kept + ' задач с фактом из ГПР, записей сводок: ' + S.records.length + (lostRecs.length ? ', без привязки: ' + lostRecs.length : '') });
+  modelWarn.forEach(w => checks.push({ ok: false, t: w, d: '' }));
+  leaves.forEach(l => { const us = ownerOf.get(l); if (us) nodes.get(l).unit = us[0]; });
+
   // отставание по объёму в днях (когда план достигал текущего факта)
   const lagDays = u => {
     const n = nodes.get(u); if (n.pc >= 99.95 || n.devPP >= -0.05) return 0;
@@ -877,7 +1243,7 @@ function build(){
   risks.push({ sev: poN > 90 ? 'warn' : 'neutral', score: 900, title: 'Предписания не устранены', where: PROJECT.gcName, text: poN + ' шт., за неделю ' + sgn(poN - po[po.length-2]), go: '#/risks', type: 'Качество' });
   risks.sort((a, b) => b.score - a.score);
 
-  M = { nodes, order, leaves, T, FILE, root, gpRoot, ms, drivers, contracts, fin, risks, wf, presc, curve, planLeaf, factLeaf, fcLeaf, lagDays, stageOf };
+  M = { nodes, order, leaves, T, FILE, root, gpRoot, ms, drivers, contracts, fin, risks, wf, presc, model: { sections, units, checks, absTotal, cfg: PM, modelNode }, curve, planLeaf, factLeaf, fcLeaf, lagDays, stageOf };
   return M;
 }
 
@@ -1055,6 +1421,11 @@ const I = {
   zin:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8 11h6M11 8v6"/>', zout:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8 11h6"/>',
   target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   up:'<path d="M12 19V5M6 11l6-6 6 6"/>',
+  card:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18M7 15h4"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  chart:'<path d="M4 20h16"/><path d="M7 16v-5M12 16V7M17 16v-8"/>',
+  menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
   building:'<path d="M6 21V5.5L12 3v18"/><path d="M12 21V8l6 2.5V21"/><path d="M4 21h16"/><path d="M8.5 8v.01M8.5 11v.01M8.5 14v.01M8.5 17v.01M15 13v.01M15 16v.01"/>'
 };
 const ico = (k, sz) => `<svg viewBox="0 0 24 24" ${sz ? `width="${sz}" height="${sz}"` : ''} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
@@ -1145,10 +1516,6 @@ function viewOverview(){
     </button>
   </section>
 
-  <section class="attention" aria-label="Требует внимания">
-    <span class="eyebrow">Требует внимания</span>
-    ${att.map(r => `<button class="att" type="button" data-go="${r.go}"><span class="dot" style="background:${stVar(r.sev)}"></span><span class="tx">${esc(r.title)} — <b style="color:${stVar(r.sev)}; font-weight:650">${esc(r.text)}</b></span>${ico('chev')}</button>`).join('')}
-  </section>
 
   <div class="row2">
     <section class="panel">
@@ -1219,7 +1586,7 @@ function msOrdinal(list){
     <span><b style="color:var(--good)">${cnt.done}</b> выполнено</span><span><b style="color:var(--crit)">${cnt.over}</b> просрочено</span>
     <span><b style="color:var(--warn-ink)">${cnt.risk}</b> под угрозой</span><span><b style="color:var(--ink)">${cnt.plan}</b> в плане</span>
   </div>
-  <div class="ms-track">
+  <div class="ms-scroll"><div class="ms-track" style="min-width:${n * 120}px">
     <span style="position:absolute; left:${half}%; right:${half}%; top:11px; height:3px; border-radius:2px; background:var(--track)"></span>
     <span style="position:absolute; left:${half}%; top:11px; height:3px; border-radius:2px; width:${Math.max(0, pos - half).toFixed(2)}%; background:var(--accent)"></span>
     <span style="position:absolute; top:-50px; left:${pos.toFixed(2)}%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:4px; z-index:1">
@@ -1234,7 +1601,7 @@ function msOrdinal(list){
         <span class="msub" style="color:${m.k === 'over' ? 'var(--ink-3)' : ''}">${esc(m.sub)}</span>
       </button>`).join('')}
     </div>
-  </div>
+  </div></div>
   <div class="msv">
     ${list.map((m, i) => `<button class="msv-i" type="button" data-go="${go(m)}">
       <span class="rail"><i style="background:${i === n - 1 ? 'transparent' : m.plan <= T ? 'var(--accent)' : 'var(--track)'}"></i><b style="${dotSt(m)}"></b></span>
@@ -1352,31 +1719,43 @@ function sCurve(n, opts = {}){
 }
 
 function viewStructure(){
-  const R = M.root, rows = [];
-  const kot = M.nodes.get(-2), gp = M.gpRoot;
-  const wTot = TOP_WEIGHTS['-2'] + TOP_WEIGHTS['16917'];
-  const row = (n, w, sub) => `<tr class="link ${sub ? 'sub' : ''}" data-go="${n.sm ? '#/node/' + n.u : '#/work/' + n.u}">
-    <td class="l" style="${sub ? '' : 'font-weight:650'}">${esc(n.name.replace(/^СМР\s+/, ''))}</td>
-    <td>${fpct(w, 1)}</td>
-    <td><div class="minib"><span class="bar"><i style="width:${n.pc}%; --c:${stVar(n.st.c === 'neutral' ? 'accent' : n.st.c)}"></i>${n.pc < 99.95 && n.planNow > 0 ? `<b style="left:${n.planNow}%"></b>` : ''}</span><b>${pctTxt(n.pc)}</b></div></td>
-    <td>${fpct(n.planNow)}</td>
-    <td style="color:${n.devPP < -0.5 ? 'var(--warn-ink)' : 'inherit'}">${Math.abs(n.devPP) < 0.05 ? '0' : (n.devPP > 0 ? '+' : '−') + fp(Math.abs(n.devPP), 1)}</td>
-    <td>${fd(n.f0)}</td><td style="color:${n.devDays > 0 ? 'var(--warn-ink)' : 'inherit'}">${fd(n.ff)}</td>
-    <td style="color:${n.devDays > 0 ? 'var(--warn-ink)' : 'inherit'}">${n.devDays > 0 ? '+' + n.devDays : '—'}</td>
-    <td>${chip(n.st.t, n.st.c)}</td></tr>`;
-  rows.push(row(kot, TOP_WEIGHTS['-2'] / wTot * 100));
-  rows.push(row(gp, TOP_WEIGHTS['16917'] / wTot * 100));
-  gp.kids.forEach(k => { const n = M.nodes.get(k); rows.push(row(n, n.W / gp.W * 100, true)); });
+  const R = M.root, MD = M.model;
+  const srcCell = U => {
+    if (U.kind === 'own' || U.kind === 'mix'){ const n = U.groups.reduce((a, g) => a + g.leafs.length, 0); return `<span class="chip accent" title="Задачи ГПР: ${esc(U.refs.map(r => M.nodes.get(r)?.name || r).join(', '))}">ГПР · ${n} зад.</span>`; }
+    if (U.kind === 'model') return `<span class="chip neutral" title="Строка в Ганте, группа «Работы вне ГПР»">вне ГПР</span>`;
+    if (U.kind === 'proxy') return `<span class="chip warn" title="${esc(U.note)}">допущение</span>`;
+    return '—';
+  };
+  const go = U => { const r = U.own[0] ?? U.refs[0]; const n = M.nodes.get(r); return n ? (n.sm ? '#/node/' : '#/work/') + n.u : ''; };
+  const bar = (pc, plan, c) => `<div class="minib"><span class="bar"><i style="width:${pc}%; --c:${c}"></i>${pc < 99.95 && plan > 0.5 ? `<b style="left:${plan}%"></b>` : ''}</span><b>${pctTxt(pc)}</b></div>`;
+  const col = (pc, plan) => pc >= 99.95 ? 'var(--good)' : pc < plan - 5 ? 'var(--warn)' : 'var(--accent)';
+  const rows = [];
+  MD.sections.forEach(S_ => {
+    const op = UI.secOpen.has(S_.id);
+    rows.push(`<tr class="sec-row link" data-act="sec-tog" data-sec="${S_.id}" aria-expanded="${op}"><td class="l"><span class="sec-chev" style="display:inline-block; transform:rotate(${op ? 90 : 0}deg); transition:transform .15s">${ico('chev', 12)}</span> <b>${esc(S_.id)} · ${esc(S_.name)}</b> <span class="faint" style="font-size:12px">· ${S_.works.length} раб.</span></td><td></td><td><b>${fp(S_.weight, 1)} %</b></td><td><b>${fp(S_.abs * 100, 2)} %</b></td><td>${fpct(S_.planNow)}</td><td>${bar(S_.pc, S_.planNow, col(S_.pc, S_.planNow))}</td><td><b>${fp(S_.contrib, 2)}</b></td><td></td></tr>`);
+    if (op) S_.works.forEach(W_ => {
+      const single = !W_.subs ? W_.units[0] : null;
+      rows.push(`<tr class="${single ? 'link' : ''} ${W_.excluded ? 'excl' : ''}" ${single && go(single) ? `data-go="${go(single)}"` : ''}><td class="l wrap" style="padding-left:24px">${esc(W_.name)}${W_.excluded ? ' <span class="chip neutral">не в объёме · Shell & Core</span>' : ''}${W_.note && !W_.subs ? `<div class="faint" style="font-size:11.5px">${esc(W_.note)}</div>` : ''}</td>
+        <td class="faint">${esc(W_.unit || '')}${W_.plannedQty != null ? ' · ' + fp(W_.plannedQty) : ''}</td><td>${W_.excluded ? '<s>' + fp(W_.weight, 1) + ' %</s>' : fp(W_.wWithin, 1) + ' %'}</td><td>${fp(W_.abs * 100, 3)} %</td><td>${W_.excluded ? '—' : fpct(W_.planNow)}</td>
+        <td>${W_.excluded ? '—' : bar(W_.pc, W_.planNow, col(W_.pc, W_.planNow))}</td><td>${W_.excluded ? '—' : fp(W_.contrib, 3)}</td><td class="l">${single ? srcCell(single) : '<span class="faint" style="font-size:12px">' + W_.units.length + ' подработ</span>'}</td></tr>`);
+      if (W_.subs) W_.units.forEach(U => rows.push(`<tr class="link sub2" ${go(U) ? `data-go="${go(U)}"` : ''}><td class="l wrap" style="padding-left:44px">${esc(U.name)}${U.note ? `<div class="faint" style="font-size:11.5px">${esc(U.note)}</div>` : ''}</td><td class="faint">${esc(U.unitName || '')}</td><td class="faint">${fp(U.subWeight, 1)} % раб.</td><td>${fp(U.abs * 100, 3)} %</td><td>${fpct(U.planNow)}</td><td>${bar(U.pc, U.planNow, col(U.pc, U.planNow))}</td><td>${fp(U.contrib, 3)}</td><td class="l">${srcCell(U)}</td></tr>`));
+    });
+  });
+  const okAll = MD.checks.every(c => c.ok);
   const html = `
-  ${implHead('structure', `Готовность ${fpct(R.pc, 1)} при плане ${fpct(R.planNow, 1)} · прогноз окончания ${fd(R.ff)}`)}
+  ${implHead('structure', `Физическая готовность ${fpct(R.pc, 1)} при плане ${fpct(R.planNow, 1)} · прогноз окончания ${fd(R.ff)}`)}
   ${nodeTiles(R)}
-  <section class="panel"><header><h2>Накопительная готовность проекта</h2><span class="sub">план · факт · прогноз, % от объёма</span></header>
+  <section class="panel"><header><h2>Накопительная готовность объекта</h2><span class="sub">план · факт · прогноз, % физической готовности по модели весов БЦ</span></header>
     <div class="pad">${sCurve(R)}</div></section>
-  <section class="panel"><header><h2>Структура готовности</h2><span class="sub">вес этапа и его вклад в общую готовность</span></header>
-    <div class="tbl-wrap"><table class="t" style="min-width:900px">
-      <thead><tr><th>Этап</th><th>Вес</th><th class="l" style="min-width:170px">Готовность · метка = план</th><th>План сег.</th><th>Откл., п.п.</th><th>Оконч. план</th><th>Прогноз</th><th>Δ, дн.</th><th class="l">Статус</th></tr></thead>
-      <tbody>${rows.join('')}</tbody></table></div>
-    <div class="pad" style="padding-top:14px"><p class="note">Вес верхнего уровня — стоимость договора (котлован 0,40 млрд ₽, генподряд 5,29 млрд ₽). Внутри генподряда вес работы — её длительность, как считает MS Project, пока в ГПР нет стоимости работ. Когда появится стоимость по работам, готовность станет равна освоенному объёму в деньгах.</p></div>
+  <section class="panel"><header><h2>Структура готовности БЦ</h2><button class="btn sm" type="button" data-act="sec-all" data-v="${UI.secOpen.size === MD.sections.length ? 0 : 1}">${UI.secOpen.size === MD.sections.length ? 'Свернуть разделы' : 'Развернуть все разделы'}</button><span class="sub">готовность объекта = Σ (абсолютный вес работы × выполнение работы)</span>${chip('Модель: ' + MD.cfg.objectType + ' · веса ' + ({ expert: 'экспертные', budget: 'по бюджету', hybrid: 'гибридные' }[MD.cfg.weightModel]), 'neutral')}</header>
+    <div class="tbl-wrap"><table class="t struct-t" style="min-width:1080px">
+      <thead><tr><th>Раздел / работа</th><th class="l">Ед.</th><th>Вес в разделе</th><th>Абс. вес</th><th>План сег.</th><th class="l" style="min-width:170px">Выполнение · метка = план</th><th>Вклад, п.п.</th><th class="l">Источник факта</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+      <tfoot><tr><td class="l">Объект</td><td></td><td>${fp(MD.cfg.sections.reduce((a, s_) => a + s_.weight, 0), 1)} %</td><td>${fp(MD.absTotal * 100, 2)} %</td><td>${fpct(R.planNow, 1)}</td><td class="l"><b>${fpct(R.pc, 2)}</b></td><td>${fp(MD.units.reduce((a, U) => a + U.contrib, 0), 2)}</td><td></td></tr></tfoot></table></div>
+    <div class="pad" style="padding-top:14px"><p class="note">Абсолютный вес = вес раздела × вес работы в разделе (× вес подработы). Вклад работы в объект = абсолютный вес × выполнение. Выполнение работы берётся из задач ГПР, которыми она владеет (факт задач взвешен по длительности); каждая задача ГПР принадлежит только одной работе. «Допущение» — отдельной строки в ГПР нет, прогресс берётся с указанной задачи. «Вне ГПР» — строка в Ганте, куда вносится факт. Конфигурация весов — объект PROGRESS_MODEL.</p></div>
+  </section>
+  <section class="panel"><header><h2>Проверка модели</h2>${chip(okAll ? 'Все проверки пройдены' : 'Есть замечания', okAll ? 'good' : 'crit')}</header>
+    <div class="pad"><div class="checks">${MD.checks.map(c => `<div class="chk"><span class="dot" style="background:${c.ok ? 'var(--good)' : 'var(--crit)'}"></span><div><b>${esc(c.t)}</b><div class="faint" style="font-size:12.5px">${esc(c.d)}</div></div></div>`).join('')}</div></div>
   </section>`;
   return { crumbs: [{ t: PROJECT.name, go: '#/' }, { t: 'Реализация' }, { t: 'Структура' }], html, nav: '#/impl/structure' };
 }
@@ -1476,6 +1855,7 @@ function viewWork(u){
     <div class="meta">${chip(n.st.t, n.st.c)}<span>${esc(ancestors(u).filter(a => a.u !== -1).map(a => a.name).join(' › '))}</span>${n.cr ? chip('Критический путь', 'crit') : ''}</div></div>
     <div style="display:flex; gap:8px; flex-wrap:wrap"><button class="btn" type="button" data-act="gantt-focus" data-u="${n.u}">${ico('gantt')}На Ганте</button><button class="btn primary" type="button" data-act="entry" data-u="${n.u}">${ico('plus')}Внести факт</button></div></div>
   <div class="tiles">
+    ${n.unit ? `<div class="tile"><div class="eyebrow">Вес в готовности БЦ</div><div class="v">${fp(n.unit.abs * 100 * (n.du || 0.5) / (n.unit.groups.find(g => g.leafs.includes(n.u))?.W || 1) * (n.unit.groups.find(g => g.leafs.includes(n.u))?.w || 1), 3)} <small>%</small></div><div class="s">${esc(n.unit.id)} · ${esc(n.unit.name)} (${fp(n.unit.abs * 100, 2)} %)</div></div>` : ''}
     <div class="tile"><div class="eyebrow">Плановый объём</div><div class="v">100 <small>%</small></div><div class="s">${n.du} раб. дн. · ${fd(n.s0)} — ${fd(n.f0)}</div></div>
     <div class="tile"><div class="eyebrow">Выполнено</div><div class="v">${fpct(n.pc, 1)}</div><div class="s">${n.asE ? 'начато ' + fd(n.asE) : 'не начато'}${n.afE ? ', окончено ' + fd(n.afE) : ''}</div></div>
     <div class="tile"><div class="eyebrow">План на сегодня</div><div class="v">${fpct(n.planNow, 1)}</div><div class="s">${fd(T)}</div></div>
@@ -1758,6 +2138,7 @@ function quickCard(){
       <dt>Факт</dt><dd>${n.asE ? fd(n.asE) : '—'} — ${n.afE ? fd(n.afE) : '…'}</dd>
       <dt>Прогноз окончания</dt><dd style="color:${n.devDays > 0 ? 'var(--warn-ink)' : 'inherit'}">${fd(n.ff)}${n.devDays > 0 ? ' · +' + n.devDays + ' дн.' : ''}</dd>
       <dt>Связи</dt><dd>${n.preds.length} предш. · ${n.succs.length} посл.</dd>
+      ${n.unit ? `<dt>Работа модели БЦ</dt><dd>${esc(n.unit.id)} · абс. вес ${fp(n.unit.abs * 100, 2)} %</dd>` : ''}
     </dl>
     <div style="display:flex; gap:8px; flex-wrap:wrap">
       <button class="btn primary" type="button" data-go="${n.sm ? '#/node/' : '#/work/'}${n.u}">${n.sm ? 'Открыть этап' : 'Динамика выполнения'} ${ico('right')}</button>
@@ -1770,7 +2151,7 @@ function viewTimeline(){
   const R = M.root, pEnd = dn(PROJECT.planEnd), delay = R.ff - pEnd;
   const chain = [...M.drivers].reverse();
   const html = `
-  <div class="head"><div class="ttl"><div class="eyebrow">Уровень 2 · Срок</div><h1 style="margin-top:6px">Путь проекта</h1>
+  <div class="head"><div class="ttl"><div class="eyebrow">Уровень 2 · Календарь проекта</div><h1 style="margin-top:6px">Календарь проекта</h1>
     <div class="meta"><span>Старт ${fd(dn(PROJECT.start))}</span><span>РВЭ по плану ${fd(pEnd)}</span>${chip(delay > 0 ? 'Прогноз ' + fd(R.ff) + ' · +' + delay + ' дн.' : 'Прогноз: в срок', delay > 0 ? 'warn' : 'good')}</div></div>
     <button class="btn" type="button" data-go="#/impl/gantt">${ico('gantt')}Полный Гант</button></div>
   <section class="panel"><header><h2>Пройденный и оставшийся путь</h2><span class="sub">месяцы, вехи и отметка «Сегодня»</span></header><div class="pad">${calendarBlock(true)}</div></section>
@@ -1789,7 +2170,7 @@ function viewTimeline(){
       </tbody></table></div></section>
   </div>
   <section class="panel"><header><h2>Вехи</h2></header><div class="pad">${msOrdinal(M.ms.filter(m => m.key))}</div></section>`;
-  return { crumbs: [{ t: PROJECT.name, go: '#/' }, { t: 'Срок реализации' }], html, nav: '#/timeline' };
+  return { crumbs: [{ t: PROJECT.name, go: '#/' }, { t: 'Календарь проекта' }], html, nav: '#/timeline' };
 }
 
 /* ================= БЮДЖЕТ ================= */
@@ -2040,6 +2421,58 @@ function viewJournal(){
   </tbody></table></div></section>`;
   return { crumbs: [{ t: PROJECT.name, go: '#/' }, { t: 'Журнал факта' }], html, nav: '#/journal' };
 }
+
+/* ================= ОТЧЁТ: сводка проекта (верхнеуровневый управленческий отчёт) ================= */
+function reportData(){
+  const R = M.root, T = M.T, start = dn(PROJECT.start), pEnd = dn(PROJECT.planEnd);
+  const total = pEnd - start, passed = T - start, delay = R.ff - pEnd, f = M.fin;
+  const stages = stageRows();
+  const lagSt = stages.filter(n => n.pc < 99.95 && (n.devDays > 0 || n.st.k === 'over' || n.st.k === 'late')).sort((a, b) => b.devDays - a.devDays);
+  const concl = [];
+  concl.push(`Готовность объекта ${fpct(R.pc, 1)} при плане на ${fd(T)} ${fpct(R.planNow, 1)} — ${R.devPP < -0.5 ? 'отставание ' + fp(-R.devPP, 1) + ' п.п.' : 'в графике'}.`);
+  concl.push(`Пройдено ${fp(passed / total * 100)} % срока (${passed} из ${total} дн.). ${delay > 0 ? `Прогноз ввода ${fd(R.ff)} — на ${delay} дн. позже плана ${fd(pEnd)}.` : `Прогноз ввода совпадает с планом ${fd(pEnd)}.`}`);
+  if (delay > 0 && M.drivers.length){ const d = [...M.drivers].reverse().slice(0, 3).map(n => n.name).join(' → '); concl.push(`Срок определяет цепочка: ${d}.`); }
+  concl.push(`Закрыто актами ${fmoney(f.closed)} (${fpct(f.closedPct, 1)} законтрактованного) при плане ${fmoney(f.plan)} — ${f.plan > f.closed ? 'ниже плана на ' + fmoney(f.plan - f.closed, 'млн') : 'выше плана на ' + fmoney(f.closed - f.plan, 'млн')}.`);
+  M.contracts.filter(c => Math.abs(c.gap) >= 5).forEach(c => concl.push(`${c.short}: физическая готовность ${fpct(c.phys, 1)}, финансовое закрытие ${fpct(c.closedPct, 1)} — расхождение ${fp(Math.abs(c.gap), 1)} п.п.`));
+  if (lagSt.length) concl.push(`Отстают этапы: ${lagSt.slice(0, 4).map(n => `${n.name.replace(/^СМР\s+/, '')} (${n.st.t.toLowerCase()})`).join('; ')}.`);
+  const wf = M.wf.fact.filter(v => v != null).slice(-1)[0], wfp = M.wf.plan.filter(v => v != null).slice(-1)[0];
+  concl.push(`Численность ${wf} чел. при плане ${wfp}. Не устранено предписаний: ${M.presc.open.filter(v => v != null).slice(-1)[0]}.`);
+  return { R, T, start, pEnd, total, passed, delay, f, stages, concl, wf, wfp };
+}
+function reportText(){
+  const d = reportData();
+  return [`Сводка проекта ${PROJECT.name} на ${fd(d.T)}`, '', ...d.concl.map(x => '• ' + x), '', 'Этапы:',
+    ...d.stages.map(n => `— ${n.name.replace(/^СМР\s+/, '')}: ${pctTxt(n.pc)}, окончание ${fd(n.f0)}${n.devDays > 0 ? ', прогноз ' + fd(n.ff) + ' (+' + n.devDays + ' дн.)' : ''}`),
+    '', 'Вехи:', ...M.ms.filter(m => m.key).map(m => `— ${m.name} (${fd(m.plan)}): ${m.t}${m.sub ? ', ' + m.sub : ''}`),
+    '', 'Риски:', ...M.risks.slice(0, 6).map(r => `— ${r.title}: ${r.text}`)].join('\n');
+}
+function viewReport(){
+  const T = M.T, start = dn(PROJECT.start), pEnd = dn(PROJECT.planEnd), total = pEnd - start, passed = clamp(T - start, 0, total);
+  const gp = M.gpRoot, gpc = M.contracts.find(c => c.id === 'gp');
+  const bt = S.settings.budgetTotal ?? PROJECT.budgetTotal;
+  const leafCnt = M.order.filter(u => u > 0).length, stageCnt = gp.kids.length;
+  const left = pEnd - T;
+  const kpi = (l, v, s) => `<div class="rp-kpi"><div class="rp-l">${l}</div><div class="rp-v">${v}</div><div class="rp-s">${s}</div></div>`;
+  const row = (go, t, s, right) => `<button class="rp-row" type="button" data-go="${go}"><span class="rp-rt"><span class="rp-t">${t}</span><span class="rp-sub">${s}</span></span><span class="rp-right">${right}</span></button>`;
+  const html = `<div class="rp">
+    <div><h1 class="rp-h1">Сводка проекта</h1><p class="rp-lede">Страница использует те же данные, что карточки и график.</p></div>
+    <div class="rp-kpis">
+      ${kpi('Физическая готовность', fp(M.root.pc) + '%', 'модель весов БЦ, снизу вверх')}
+      ${kpi('Время', fp(passed / total * 100) + '%', passed + ' дн. из ' + total)}
+      ${kpi('График СМР', fp(gp.pc) + '%', 'по MPP')}
+      ${kpi('Проектный бюджет', bt ? fmoney(bt) : '— ₽', bt ? 'законтрактовано ' + fpct(M.fin.contracted / bt * 100) : 'не предоставлен')}
+    </div>
+    <section class="rp-panel">
+      <header class="rp-ph"><h2>Ключевые факты</h2><button class="rp-btn no-print" type="button" data-act="print">Печать / PDF</button></header>
+      <div class="rp-list">
+        ${row('#/timeline', 'Окончание проекта по плану', fd(pEnd), `<span class="rp-st"><span class="dot" style="background:${left < 0 ? 'var(--crit)' : 'var(--ink-3)'}"></span>${left >= 0 ? 'Осталось ' + left + ' дн.' : 'Просрочено ' + (-left) + ' дн.'}</span>`)}
+        ${row('#/impl/gantt', 'График генподряда', leafCnt + ' задач · ' + stageCnt + ' крупных этапов', fp(gp.pc) + '%')}
+        ${row('#/contract/gp', 'Договор ГП', 'Стоимость ' + Math.round(gpc.price).toLocaleString('ru-RU') + ' ₽', 'Закрыто ' + fp(gpc.closedPct, 1) + '%')}
+      </div>
+    </section>
+  </div>`;
+  return { crumbs: [{ t: PROJECT.name, go: '#/' }, { t: 'Отчёт' }], html, nav: '#/report' };
+}
 /* ================= ОБЩЕЕ ХРАНИЛИЩЕ: запись и подписка ================= */
 const COLLS = ['records', 'fin', 'metrics', 'photos', 'imports', 'airisks', 'settings'];
 async function put(coll, id, data){
@@ -2171,7 +2604,7 @@ function parseMspdi(text, name){
 /* ================= ЗАПРОС К ИИ ================= */
 function catalogText(){
   const lines = [];
-  const stages = [M.nodes.get(-2), ...M.gpRoot.kids.map(k => M.nodes.get(k))];
+  const stages = [M.nodes.get(-2), ...M.gpRoot.kids.map(k => M.nodes.get(k)), ...(M.nodes.has(-10) ? [M.nodes.get(-10)] : [])];
   stages.forEach(st => {
     const leafs = (st.sm ? st.leafs : [st.u]).map(l => M.nodes.get(l)).filter(n => n.pc < 100);
     if (!leafs.length) return;
@@ -2426,11 +2859,33 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('change', e => { const c = e.target.closest('[data-pi]'); if (c){ AI.props[+c.dataset.pi].on = c.checked; } });
 /* ================= НАВИГАЦИЯ ================= */
-const NAV = [
-  ['#/', 'Обзор', 'grid'], ['#/impl/structure', 'Реализация', 'gantt'], ['#/timeline', 'Срок', 'clock'],
-  ['#/budget', 'Бюджет и договоры', 'coins'], ['#/photos', 'Фотохроника', 'cam'], ['#/risks', 'Риски', 'alert'], ['#/journal', 'Журнал факта', 'list']
-];
-const BOT = [['#/', 'Обзор', 'grid'], ['#/impl/gantt', 'График', 'gantt'], ['#/budget', 'Бюджет', 'coins'], ['#/photos', 'Фото', 'cam'], ['#/journal', 'Журнал', 'list']];
+/* Навигация: одна структура для боковой панели и мобильного меню.
+   «Данные и отчёты» — группа (не страница), по умолчанию свёрнута; раскрывается сама, если открыт «Журнал» или «Риски». */
+const NAV_MAIN = [['#/', 'Обзор', 'grid'], ['#/impl/structure', 'Реализация', 'gantt'], ['#/timeline', 'Календарь проекта', 'cal'], ['#/budget', 'Бюджет', 'card'], ['#/photos', 'Фото', 'image']];
+const NAV_DATA = [['#/journal', 'Журнал', 'doc'], ['#/risks', 'Риски', 'alert'], ['#/report', 'Отчёт', 'chart']];
+const NAV_REPORT = ['#/report', 'Отчёт', 'chart'];
+const BOT = [['#/', 'Обзор', 'grid'], ['#/impl/structure', 'Реализация', 'gantt'], ['#/timeline', 'Календарь', 'cal'], ['#/budget', 'Бюджет', 'card']];
+UI.dataOpen = false;
+UI.secOpen = new Set();
+function navHTML(cur, crit, gid){
+  const it = ([h, t, ic], cnt) => `<button class="nav-i" type="button" data-go="${h}" ${cur === h ? 'aria-current="page"' : ''} title="${t}">${ico(ic)}<span class="nl">${t}</span>${cnt ? `<span class="cnt" aria-label="критичных: ${cnt}">${cnt}</span>` : ''}</button>`;
+  if (NAV_DATA.some(x => x[0] === cur)) UI.dataOpen = true;
+  const open = UI.dataOpen;
+  return `<div class="sb-sec">Проект</div>
+    ${NAV_MAIN.map(x => it(x)).join('')}
+    <div class="sb-group ${open ? 'open' : ''}">
+      <button class="sb-gh" type="button" data-act="nav-group" aria-expanded="${open}" aria-controls="${gid}" title="Данные и отчёты"><span class="nl">Данные и отчёты</span>${ico('chev')}</button>
+      <div class="sb-gb" id="${gid}" role="group" aria-label="Данные и отчёты"><div class="sb-gi" ${open ? '' : 'inert'}>${it(NAV_DATA[0])}${it(NAV_DATA[1], crit)}${it(NAV_DATA[2])}</div></div>
+    </div>`;
+}
+function openMobileNav(){
+  const crit = M.risks.filter(r => r.sev === 'crit').length;
+  document.getElementById('layer').innerHTML = `<div class="msheet-bg" data-bg="1"><nav class="msheet" aria-label="Меню">
+    <span class="grab" aria-hidden="true"></span>${navHTML(UI._nav, crit, 'mg1')}
+    <div style="display:flex; gap:8px; margin-top:10px"><button class="btn primary" type="button" data-act="entry" style="flex:1; justify-content:center">${ico('plus')}Внести факт</button><button class="btn" type="button" data-act="theme">Тема</button></div>
+  </nav></div>`;
+  document.querySelector('.msheet-bg').addEventListener('click', e => { if (e.target.dataset.bg) closeLayer(); });
+}
 let memHash = '#/', depth = 0;
 const curHash = () => { try { return location.hash || memHash; } catch(e){ return memHash; } };
 function go(h){
@@ -2454,6 +2909,7 @@ function route(h){
   if (p[0] === 'photos') return p[1] === 'compare' ? viewCompare() : viewPhotos(p[1]);
   if (p[0] === 'risks') return viewRisks();
   if (p[0] === 'journal') return viewJournal();
+  if (p[0] === 'report') return viewReport();
   return viewMissing();
 }
 let lastHash = null;
@@ -2461,8 +2917,11 @@ function render(){
   const h = curHash();
   const v = route(h);
   const crit = M.risks.filter(r => r.sev === 'crit').length;
-  document.getElementById('sbnav').innerHTML = NAV.map(([hh, t, ic]) => `<button class="nav-i" type="button" data-go="${hh}" ${v.nav === hh ? 'aria-current="page"' : ''} title="${t}">${ico(ic)}<span class="nl">${t}</span>${hh === '#/risks' && crit ? `<span class="cnt">${crit}</span>` : ''}</button>`).join('');
-  document.getElementById('botnav').innerHTML = BOT.map(([hh, t, ic]) => `<button type="button" data-go="${hh}" ${(v.nav === hh || (hh === '#/impl/gantt' && v.nav === '#/impl/structure')) ? 'aria-current="page"' : ''}>${ico(ic)}${t}</button>`).join('');
+  UI._nav = v.nav;
+  document.getElementById('sbnav').innerHTML = navHTML(v.nav, crit, 'sb-g1');
+  const inMenu = ['#/photos', '#/journal', '#/risks', '#/report'].includes(v.nav);
+  document.getElementById('botnav').innerHTML = BOT.map(([hh, t, ic]) => `<button type="button" data-go="${hh}" ${v.nav === hh ? 'aria-current="page"' : ''}>${ico(ic)}${t}</button>`).join('')
+    + `<button type="button" data-act="mnav" ${inMenu ? 'aria-current="page"' : ''} aria-label="Все разделы">${ico('menu')}Ещё</button>`;
   const cr = v.crumbs || [];
   const parent = [...cr].reverse().find((c, i) => i > 0 && c.go);
   document.getElementById('topbar').innerHTML = `
@@ -2483,6 +2942,8 @@ function render(){
   if (h !== lastHash){ window.scrollTo(0, 0); if (!h.startsWith('#/impl/gantt')) UI.sel = null; }
   lastHash = h;
   quickCard();
+  // вехи: если не помещаются, лента прокручивается и открывается на «Сегодня»
+  document.querySelectorAll('.ms-scroll').forEach(sc => { const tp = sc.querySelector('.today-pill'); if (tp && sc.scrollWidth > sc.clientWidth){ const r = tp.getBoundingClientRect(), b = sc.getBoundingClientRect(); sc.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2); } });
   if (v.after) v.after();
 }
 
@@ -2496,7 +2957,16 @@ document.addEventListener('click', e => {
   if (t.dataset.go){ e.preventDefault(); e.stopPropagation(); closeLayer(); go(t.dataset.go); return; }
   const a = t.dataset.act;
   if (a === 'back'){ if (depth > 0){ depth--; try { history.back(); } catch(err){ go(UI._parent); } } else go(UI._parent); }
-  else if (a === 'entry') openEntry(t.dataset.u ? +t.dataset.u : null);
+  else if (a === 'nav-group'){
+    const g = t.closest('.sb-group'); UI.dataOpen = !g.classList.contains('open');
+    document.querySelectorAll('.sb-group').forEach(x => { x.classList.toggle('open', UI.dataOpen); x.querySelector('.sb-gh').setAttribute('aria-expanded', String(UI.dataOpen)); const gi = x.querySelector('.sb-gi'); if (UI.dataOpen) gi.removeAttribute('inert'); else gi.setAttribute('inert', ''); });
+  }
+  else if (a === 'mnav') openMobileNav();
+  else if (a === 'sec-tog'){ const id = t.dataset.sec; UI.secOpen.has(id) ? UI.secOpen.delete(id) : UI.secOpen.add(id); const y = window.scrollY; render(); window.scrollTo(0, y); }
+  else if (a === 'sec-all'){ UI.secOpen = t.dataset.v === '1' ? new Set(M.model.sections.map(x => x.id)) : new Set(); const y = window.scrollY; render(); window.scrollTo(0, y); }
+  else if (a === 'print'){ if (window.claude && typeof window.claude.use === 'function') toast('Печать в PDF доступна в скачанном HTML-файле: откройте его в браузере и нажмите «Печать / PDF».'); else { try { window.print(); } catch(err){} } }
+  else if (a === 'copy-report'){ const txt = reportText(); try { navigator.clipboard.writeText(txt).then(() => toast('Текст отчёта скопирован.'), () => showText(txt)); } catch(err){ showText(txt); } }
+  else if (a === 'entry'){ closeLayer(); openEntry(t.dataset.u ? +t.dataset.u : null); }
   else if (a === 'theme'){ const r = document.documentElement; const cur = r.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); r.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark'); LS.set('theme', r.getAttribute('data-theme')); render(); }
   else if (a === 'gzoom') setScale(G.px * +t.dataset.f);
   else if (a === 'gtoday'){ G.pendingScroll = 'today'; drawGantt(); }
@@ -2588,7 +3058,7 @@ function openConfirm(title, text, ok){
 function showText(txt){ modal('Скопируйте текст', `<div class="fld"><textarea id="copy-area" style="height:220px">${esc(txt)}</textarea></div>`); const a = document.getElementById('copy-area'); a.focus(); a.select(); }
 
 function openEntry(uid){
-  const list = M.leaves.map(u => M.nodes.get(u)).filter(n => n.u > 0 && n.pc < 100).sort((a, b) => (b.pc > 0 && b.s0 <= M.T) - (a.pc > 0 && a.s0 <= M.T) || a.s0 - b.s0);
+  const list = M.leaves.map(u => M.nodes.get(u)).filter(n => (n.u > 0 || n.u <= -100) && n.pc < 100).sort((a, b) => (b.pc > 0 && b.s0 <= M.T) - (a.pc > 0 && a.s0 <= M.T) || a.s0 - b.s0);
   let sel = uid && M.nodes.get(uid) && !M.nodes.get(uid).sm ? uid : null;
   modal('Внести факт', `
     <div class="fld"><label for="e-q">Работа</label><input id="e-q" type="search" placeholder="Начните вводить название или ID" autocomplete="off">
